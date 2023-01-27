@@ -11,7 +11,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/sight-book
     username: postgres
-    password: 12345
+    password: postgres
 
     show-sql: false
 

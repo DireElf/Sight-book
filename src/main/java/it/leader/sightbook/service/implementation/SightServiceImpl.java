@@ -6,11 +6,11 @@ import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import it.leader.sightbook.service.SightService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
