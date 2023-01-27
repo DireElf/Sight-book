@@ -1,8 +1,8 @@
 package it.leader.sightbook.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ import java.util.Date;
 
 @Entity
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Table(name = "sights")
@@ -34,20 +34,16 @@ public class Sight {
     private String name;
 
     @Column(name = "creation_date")
-    private Date creation;
+    private Date creationDate;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "sight_type")
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private SightType type;
 
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false, foreignKey = @ForeignKey(name = "FK_SIGHTS_CITY_ID_COL"))
     private City city;
-
-    private enum Type {
-        BUILDING, STRUCTURE, MUSEUM, MONUMENT, RESERVE;
-    }
 }
