@@ -1,0 +1,23 @@
+server:
+  port: ${PORT:5000}
+
+base-url: /api
+
+spring:
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/changelog-master.xml
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sight-book
+    username: postgres
+    password: 12345
+
+    show-sql: false
+
+    jpa:
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgresSQL10Dialect
+      show-sql: true
+      hibernate:
+        ddl-auto: update
