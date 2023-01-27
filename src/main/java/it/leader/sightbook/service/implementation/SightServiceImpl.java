@@ -47,12 +47,9 @@ public class SightServiceImpl implements SightService {
     }
 
     @Override
-    public Iterable<Sight> getSights(Map<String, String> params) {
+    public List<Sight> getSights(Map<String, String> params) {
         List<Sight> sightList = sightRepository.findAll();
-        if (params == null || params.isEmpty()) {
-            return sightList;
-        }
-        if (params.containsKey("type")) {
+        if (params.containsKey("type") && params.get("type").equals("true")) {
             sightList = sightList.stream()
                     .filter(sight -> sight.getType().name().equals(params.get("type")))
                     .toList();
