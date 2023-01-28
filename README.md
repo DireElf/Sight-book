@@ -16,6 +16,7 @@ gradle bootRun
 пользователь: postgres
 пароль:       postgres 
 
+
 Таблицы в БД будут сформированы во время сборки
-В файле sight-book.postman_collection.json в корне проекта есть коллекция запросов для Postman
+По ссылке https://drive.google.com/file/d/1SbrPyYYDeu1PdeD24XaX782CpS0zitxN/view?usp=sharing лежит коллекция запросов для Postman 
 (можно импортировать и использовать для тестирования)
