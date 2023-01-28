@@ -18,6 +18,7 @@ gradle bootRun
 ```
 порт сервера: 5000  
 хост БД:      localhost (или 127.0.0.1)  
+порт БД:      5432  
 название БД:  sight-book  
 пользователь: postgres  
 пароль:       postgres   
