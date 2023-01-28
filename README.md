@@ -1,5 +1,6 @@
-Для запуска требуется: Java 8 (или выше), PostgreSQL и пользователь с соответствующими правами
-Сборка: Gradle
+Для запуска требуется: Java 8 (или выше), PostgreSQL и пользователь с соответствующими правами. 
+
+Сборка проекта: Gradle
 
 Сборка и запуск на Windows:
 gradle clean build
@@ -18,5 +19,5 @@ gradle bootRun
 
 
 Таблицы в БД будут сформированы во время сборки
-По ссылке https://drive.google.com/file/d/1SbrPyYYDeu1PdeD24XaX782CpS0zitxN/view?usp=sharing лежит коллекция запросов для Postman 
-(можно импортировать и использовать для тестирования)
+По ссылке https://drive.google.com/file/d/1SbrPyYYDeu1PdeD24XaX782CpS0zitxN/view?usp=sharing 
+лежит коллекция запросов для Postman (можно импортировать и использовать для тестирования)
