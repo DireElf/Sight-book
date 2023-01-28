@@ -18,6 +18,6 @@ gradle bootRun
 пароль:       postgres 
 
 
-Таблицы в БД будут сформированы во время сборки
+Таблицы в БД будут сформированы во время сборки.
 По ссылке https://drive.google.com/file/d/1SbrPyYYDeu1PdeD24XaX782CpS0zitxN/view?usp=sharing 
 лежит коллекция запросов для Postman (можно импортировать и использовать для тестирования)
