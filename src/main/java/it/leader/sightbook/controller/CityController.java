@@ -1,6 +1,7 @@
 package it.leader.sightbook.controller;
 
 import it.leader.sightbook.dto.CityDto;
+import it.leader.sightbook.dto.CityUpdateDto;
 import it.leader.sightbook.model.City;
 import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.service.CityService;
@@ -37,8 +38,8 @@ public class CityController {
     }
 
     @PutMapping(ID)
-    public City updateCity(@PathVariable Long id, @RequestBody CityDto cityDto) {
-        return cityService.updateCity(id, cityDto);
+    public City updateCity(@PathVariable Long id, @RequestBody CityUpdateDto cityUpdateDto) {
+        return cityService.updateCity(id, cityUpdateDto);
     }
 
     @GetMapping(ID + SIGHTS)

@@ -1,5 +1,6 @@
 package it.leader.sightbook.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -27,13 +29,14 @@ import java.util.Date;
 public class Sight {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "sight_name", unique = true)
     private String name;
 
     @Column(name = "creation_date")
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
     private Date creationDate;
 
     @Column(name = "description")
@@ -43,6 +46,7 @@ public class Sight {
     @Enumerated(EnumType.STRING)
     private SightType type;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false, foreignKey = @ForeignKey(name = "FK_SIGHTS_CITY_ID_COL"))
     private City city;

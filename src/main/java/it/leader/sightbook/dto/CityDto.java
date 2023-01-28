@@ -1,12 +1,10 @@
 package it.leader.sightbook.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Set;
 
-@AllArgsConstructor
 @Getter
 @Setter
 public class CityDto {

@@ -1,6 +1,7 @@
 package it.leader.sightbook.controller;
 
 import it.leader.sightbook.dto.SightDto;
+import it.leader.sightbook.dto.SightUpdateDto;
 import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.repository.SightRepository;
 import it.leader.sightbook.service.SightService;
@@ -35,7 +36,7 @@ public class SightController {
 
     @GetMapping("")
     public List<Sight> getSights(@RequestParam(required = false) Map<String, String> params) {
-        return params.isEmpty() ? sightRepository.findAll() : sightService.getSights(params);
+        return sightService.getSights(params);
     }
 
     @PostMapping("")
@@ -45,8 +46,8 @@ public class SightController {
     }
 
     @PutMapping(ID)
-    public Sight updateSight(@PathVariable Long id, @RequestBody SightDto sightDto) {
-        return sightService.updateSight(id, sightDto);
+    public Sight updateSight(@PathVariable Long id, @RequestBody SightUpdateDto sightUpdateDto) {
+        return sightService.updateSight(id, sightUpdateDto);
     }
 
     @DeleteMapping(ID)

@@ -1,6 +1,7 @@
 package it.leader.sightbook.service.implementation;
 
 import it.leader.sightbook.dto.CityDto;
+import it.leader.sightbook.dto.CityUpdateDto;
 import it.leader.sightbook.model.City;
 import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.repository.CityRepository;
@@ -26,7 +27,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public City createCity(CityDto cityDto) {
         final City city = new City();
-        city.setName(city.getName());
+        city.setName(cityDto.getName());
         city.setPopulation(cityDto.getPopulation());
         city.setHasMetro(cityDto.getHasMetro());
         city.setCountry(cityDto.getCountry());
@@ -44,10 +45,10 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public City updateCity(Long id, CityDto cityDto) {
+    public City updateCity(Long id, CityUpdateDto cityUpdateDto) {
         final City city = cityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        city.setPopulation(cityDto.getPopulation());
-        city.setHasMetro(cityDto.getHasMetro());
+        city.setPopulation(cityUpdateDto.getPopulation());
+        city.setHasMetro(cityUpdateDto.getHasMetro());
         cityRepository.save(city);
         return city;
     }
