@@ -1,7 +1,7 @@
 [![Tests](https://github.com/DireElf/Sight-book/actions/workflows/Tests.yml/badge.svg)](https://github.com/DireElf/Sight-book/actions/workflows/Tests.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/dcfd062924c7d771d847/maintainability)](https://codeclimate.com/github/DireElf/Sight-book/maintainability)
 
-Для запуска потребуются: Java 8 (или выше), PostgreSQL и пользователь с соответствующими правами.   
+Для запуска потребуются: Java 8 (или выше), PostgreSQL и пользователь с соответствующими правами.     
 
 Сборка проекта: Gradle  
 
@@ -28,7 +28,9 @@ gradle bootRun
 ```
 
 
-Таблицы в БД будут сформированы во время сборки.  
+Таблицы в БД будут сформированы во время сборки. 
+
+Часть функционала уже покрыта интеграционными тестами (позитивные кейсы), для тестирования используется in-memory БД H2.  
 
 По ссылке https://drive.google.com/file/d/1SbrPyYYDeu1PdeD24XaX782CpS0zitxN/view?usp=sharing   
 лежит коллекция запросов для Postman (можно импортировать и использовать для тестирования).
