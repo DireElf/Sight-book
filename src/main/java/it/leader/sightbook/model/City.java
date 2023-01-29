@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -42,6 +43,14 @@ public class City {
     private String country;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "city", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Sight> sights;
+
+    public void addSightToCity(Sight sight) {
+        if (sights == null) {
+            sights = new HashSet<>();
+        }
+        sight.setCity(this);
+        sights.add(sight);
+    }
 }

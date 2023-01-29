@@ -17,8 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 import static it.leader.sightbook.controller.CityController.CITIES_CONTROLLER_PATH;
@@ -56,7 +56,7 @@ class CityControllerTest {
     }
 
     @Test
-    void testAddCity() throws Exception {
+    void addCity() throws Exception {
         assertEquals(0, cityRepository.findAll().size());
 
         final MockHttpServletRequestBuilder request = post(BASE_URL + CITIES_CONTROLLER_PATH)
@@ -93,7 +93,7 @@ class CityControllerTest {
     }
 
     @Test
-    void testGetCitySights() throws Exception {
+    void getCitySights() throws Exception {
         mockMvc.perform(testUtils.buildRequest(testUtils.SAMPLE_CITY_DTO_2, CITIES_CONTROLLER_PATH));
 
         City city = cityRepository.findAll().get(0);
@@ -116,7 +116,7 @@ class CityControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        Set<Sight> updatedCitySights = testUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
+        List<Sight> updatedCitySights = testUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
         });
 
         assertEquals(2, updatedCitySights.size());

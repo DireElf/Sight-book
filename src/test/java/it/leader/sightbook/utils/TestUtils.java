@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.leader.sightbook.dto.CityDto;
 import it.leader.sightbook.dto.SightDto;
 import it.leader.sightbook.dto.Transferable;
+import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -91,5 +94,18 @@ public class TestUtils {
         return post(BASE_URL + path)
                 .content(asJson(dto))
                 .contentType(APPLICATION_JSON);
+    }
+
+    public boolean isSorted(List<Sight> list) {
+        Iterator<Sight> iterator = list.iterator();
+        String current, previous = iterator.next().getName();
+        while (iterator.hasNext()) {
+            current = iterator.next().getName();
+            if (previous.compareTo(current) > 0) {
+                return false;
+            }
+            previous = current;
+        }
+        return true;
     }
 }

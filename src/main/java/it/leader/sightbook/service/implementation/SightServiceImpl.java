@@ -35,8 +35,9 @@ public class SightServiceImpl implements SightService {
         sight.setType(sightDto.getSightType());
         String cityName = sightDto.getCityName();
         City city = cityRepository.findByName(cityName);
-        sight.setCity(city);
+        city.addSightToCity(sight);
         sightRepository.save(sight);
+        cityRepository.save(city);
         return sight;
     }
 
