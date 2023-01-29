@@ -1,5 +1,5 @@
 
-name: Tests passed
+name: Tests
 on: push
 jobs:
   gradle:
