@@ -10,5 +10,5 @@ import java.util.Set;
 public interface CityService {
     City createCity(CityDto cityDto);
     City updateCity(Long id, CityUpdateDto dto);
-    Set<Sight> getCitySights(Long cityId);
+    Set<Sight> getCitySights(Long id);
 }

@@ -1,0 +1,21 @@
+spring:
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/changelog-master.xml
+    url: jdbc:h2:mem:test-db
+    user: sa
+    password:
+    drop-first: true
+
+
+  datasource:
+    url: jdbc:h2:mem:test-db
+    username: sa
+    password:
+
+    show-sql: false
+
+    jpa:
+      show-sql: true
+      hibernate:
+        ddl-auto: update

@@ -9,5 +9,4 @@ class SightBookApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

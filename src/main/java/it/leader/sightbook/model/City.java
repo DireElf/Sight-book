@@ -42,6 +42,6 @@ public class City {
     private String country;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Sight> sights;
 }

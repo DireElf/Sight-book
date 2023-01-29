@@ -54,8 +54,8 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public Set<Sight> getCitySights(Long cityId) {
-        final City city = cityRepository.findById(cityId).orElseThrow(EntityNotFoundException::new);
+    public Set<Sight> getCitySights(Long id) {
+        final City city = cityRepository.findById(id).orElseThrow();
         if (city.getSights() == null) {
             return new HashSet<>();
         }
