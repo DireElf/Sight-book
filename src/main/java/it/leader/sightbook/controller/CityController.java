@@ -20,6 +20,7 @@ import java.util.Set;
 
 import static it.leader.sightbook.controller.CityController.CITIES_CONTROLLER_PATH;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${base-url}" + CITIES_CONTROLLER_PATH)
@@ -27,7 +28,7 @@ public class CityController {
 
     public static final String CITIES_CONTROLLER_PATH = "/cities";
     public static final String ID = "/{id}";
-    public static final String SIGHTS = "/sights";
+    public static final String CITY_SIGHTS_ENDPOINT = "/sights";
 
     private final CityService cityService;
 
@@ -42,7 +43,7 @@ public class CityController {
         return cityService.updateCity(id, cityUpdateDto);
     }
 
-    @GetMapping(ID + SIGHTS)
+    @GetMapping(ID + CITY_SIGHTS_ENDPOINT)
     public Set<Sight> getCitySights(@PathVariable Long id) {
         return cityService.getCitySights(id);
     }

@@ -1,36 +1,35 @@
 package it.leader.sightbook.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import it.leader.sightbook.dto.CityDto;
 import it.leader.sightbook.dto.CityUpdateDto;
 import it.leader.sightbook.dto.SightDto;
 import it.leader.sightbook.model.City;
 import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
-import it.leader.sightbook.service.CityService;
 
-import it.leader.sightbook.service.SightService;
-import org.junit.jupiter.api.AfterEach;
+import it.leader.sightbook.utils.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static it.leader.sightbook.controller.CityController.SIGHTS;
+import static it.leader.sightbook.controller.CityController.CITIES_CONTROLLER_PATH;
+import static it.leader.sightbook.controller.CityController.CITY_SIGHTS_ENDPOINT;
+import static it.leader.sightbook.controller.SightController.SIGHTS_CONTROLLER_PATH;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static it.leader.sightbook.utils.TestUtils.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static it.leader.sightbook.controller.CityController.ID;
 
@@ -38,7 +37,6 @@ import static it.leader.sightbook.controller.CityController.ID;
 @AutoConfigureMockMvc
 class CityControllerTest {
     public static final String BASE_URL = "/api";
-    public static final String CITIES_URL = "/cities";
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,78 +48,77 @@ class CityControllerTest {
     private SightRepository sightRepository;
 
     @Autowired
-    private CityService cityService;
+    private TestUtils testUtils;
 
-    @Autowired
-    private SightService sightService;
-
-    @AfterEach
-    void clear() {
-        sightRepository.deleteAll();
-        cityRepository.deleteAll();
+    @BeforeEach
+    void init() throws Exception {
+        testUtils.clearDB();
     }
 
     @Test
     void testAddCity() throws Exception {
-        CityDto cityDto = getSampleCityDto1();
-        final MockHttpServletRequestBuilder request = post(BASE_URL + CITIES_URL)
-                .content(asJson(cityDto))
+        assertEquals(0, cityRepository.findAll().size());
+
+        final MockHttpServletRequestBuilder request = post(BASE_URL + CITIES_CONTROLLER_PATH)
+                .content(testUtils.asJson(testUtils.SAMPLE_CITY_DTO_1))
                 .contentType(APPLICATION_JSON);
 
-        mockMvc.perform(request)
-                .andDo(print())
-                .andExpect(status().isCreated());
+        mockMvc.perform(request).andExpect(status().isCreated());
+
         assertEquals(1, cityRepository.findAll().size());
     }
 
     @Test
     void updateCity() throws Exception {
-        CityDto cityDto = getSampleCityDto1();
-        cityService.createCity(cityDto);
-        Long cityId = cityRepository.findAll().get(0).getId();
+        mockMvc.perform(testUtils.buildRequest(testUtils.SAMPLE_CITY_DTO_1, CITIES_CONTROLLER_PATH));
 
-        CityUpdateDto cityUpdateDto = new CityUpdateDto(42, true);
+        City city = cityRepository.findAll().get(0);
 
-        final MockHttpServletRequestBuilder request = put(BASE_URL + CITIES_URL + ID, cityId)
-                .content(asJson(cityUpdateDto))
+        final long cityId = city.getId();
+        final int samplePopulation = city.getPopulation() + 1;
+        final boolean sampleHasMetro = !city.getHasMetro();
+
+        CityUpdateDto cityUpdateDto = new CityUpdateDto(samplePopulation, sampleHasMetro);
+
+        final MockHttpServletRequestBuilder request = put(BASE_URL + CITIES_CONTROLLER_PATH + ID, cityId)
+                .content(testUtils.asJson(cityUpdateDto))
                 .contentType(APPLICATION_JSON);
 
-        mockMvc.perform(request)
-                .andDo(print())
-                .andExpect(status().isOk());
+        mockMvc.perform(request).andExpect(status().isOk());
+
         City updatedCity = cityRepository.findAll().get(0);
-        assertEquals(42, updatedCity.getPopulation());
-        assertEquals(true, updatedCity.getHasMetro());
+
+        assertEquals(samplePopulation, updatedCity.getPopulation());
+        assertEquals(sampleHasMetro, updatedCity.getHasMetro());
     }
 
     @Test
     void testGetCitySights() throws Exception {
-        CityDto cityDto = getSampleCityDto1();
-        cityService.createCity(cityDto);
-
-        SightDto sightDto1 = getSampleSightDto1();
-        sightDto1.setCityName(cityDto.getName());
-        sightService.createSight(sightDto1);
-        Sight sight1 = sightRepository.findAll().get(0);
-
-        SightDto sightDto2 = getSampleSightDto2();
-        sightDto2.setCityName(cityDto.getName());
-        sightService.createSight(sightDto2);
-        Sight sight2 = sightRepository.findAll().get(1);
+        mockMvc.perform(testUtils.buildRequest(testUtils.SAMPLE_CITY_DTO_2, CITIES_CONTROLLER_PATH));
 
         City city = cityRepository.findAll().get(0);
-        city.setSights(Set.of(sight1, sight2));
-        cityRepository.save(city);
-
         Long cityId = cityRepository.findAll().get(0).getId();
+        String cityName = city.getName();
+        Set<Sight> citySights = city.getSights();
 
-        MockHttpServletResponse response = mockMvc.perform(get(BASE_URL + CITIES_URL + ID + SIGHTS, cityId))
+        assertEquals(0, citySights.size());
+
+        SightDto sightDto1 = testUtils.SAMPLE_SIGHT_DTO_1;
+        sightDto1.setCityName(cityName);
+        mockMvc.perform(testUtils.buildRequest(sightDto1, SIGHTS_CONTROLLER_PATH));
+
+        SightDto sightDto2 = testUtils.SAMPLE_SIGHT_DTO_2;
+        sightDto2.setCityName(cityName);
+        mockMvc.perform(testUtils.buildRequest(sightDto2, SIGHTS_CONTROLLER_PATH));
+
+        MockHttpServletResponse response = mockMvc.perform(
+                get(BASE_URL + CITIES_CONTROLLER_PATH + ID + CITY_SIGHTS_ENDPOINT, cityId))
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        Set<Sight> citySights = fromJson(response.getContentAsString(), new TypeReference<>() {
+        Set<Sight> updatedCitySights = testUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
         });
 
-        assertEquals(2, citySights.size());
+        assertEquals(2, updatedCitySights.size());
     }
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CityUpdateDto {
+public class CityUpdateDto implements Transferable {
     private Integer population;
     private Boolean hasMetro;
 }

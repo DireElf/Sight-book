@@ -4,24 +4,51 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.leader.sightbook.dto.CityDto;
-import it.leader.sightbook.dto.CityUpdateDto;
 import it.leader.sightbook.dto.SightDto;
-import it.leader.sightbook.model.SightType;
+import it.leader.sightbook.dto.Transferable;
 import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+@Component
 public class TestUtils {
+    public static final String PATH_TO_FIXTURES = "src/test/resources/fixtures/";
+    public static final String BASE_URL = "/api";
 
-    @Autowired
-    private MockMvc mockMvc;
+    public final CityDto SAMPLE_CITY_DTO_1 = fromJson(
+            readFixtureJson("sample_city_dto1.json"),
+            new TypeReference<>() {
+    });
+    public final CityDto SAMPLE_CITY_DTO_2 = fromJson(
+            readFixtureJson("sample_city_dto2.json"),
+            new TypeReference<>() {
+    });
+    public final CityDto SAMPLE_CITY_DTO_3 = fromJson(
+            readFixtureJson("sample_city_dto3.json"),
+            new TypeReference<>() {
+    });
+
+    public final SightDto SAMPLE_SIGHT_DTO_1 = fromJson(
+            readFixtureJson("sample_sight_dto1.json"),
+            new TypeReference<>() {
+    });
+    public final SightDto SAMPLE_SIGHT_DTO_2 = fromJson(
+            readFixtureJson("sample_sight_dto2.json"),
+            new TypeReference<>() {
+    });
+    public final SightDto SAMPLE_SIGHT_DTO_3 = fromJson(
+            readFixtureJson("sample_sight_dto3.json"),
+            new TypeReference<>() {
+    });
 
     @Autowired
     private CityRepository cityRepository;
@@ -29,63 +56,40 @@ public class TestUtils {
     @Autowired
     private SightRepository sightRepository;
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
 
-    public static CityDto getSampleCityDto1() {
-        CityDto cityDto = new CityDto();
-        cityDto.setName("Tomsk");
-        cityDto.setPopulation(1000);
-        cityDto.setHasMetro(false);
-        cityDto.setCountry("Russia");
-        return cityDto;
+    public void clearDB() {
+        sightRepository.deleteAll();
+        cityRepository.deleteAll();
     }
 
-    public static CityDto getSampleCityDto2() {
-        CityDto cityDto = new CityDto();
-        cityDto.setName("Seversk");
-        cityDto.setPopulation(100);
-        cityDto.setHasMetro(false);
-        cityDto.setCountry("Russia");
-        return cityDto;
-    }
-
-    public static SightDto getSampleSightDto1() {
-        SightDto sightDto = new SightDto();
-        sightDto.setName("Monument1");
-        sightDto.setDescription("Description");
-        sightDto.setCityName("Tomsk");
-        sightDto.setSightType(SightType.MONUMENT);
-        sightDto.setCreationDate(parseDate("2000-01-01"));
-        return sightDto;
-    }
-
-    public static SightDto getSampleSightDto2() {
-        SightDto sightDto = new SightDto();
-        sightDto.setName("RESERVE");
-        sightDto.setDescription("Description");
-        sightDto.setCityName("Seversk");
-        sightDto.setSightType(SightType.RESERVE);
-        sightDto.setCreationDate(parseDate("2001-02-02"));
-        return sightDto;
-    }
-
-    public static Date parseDate(String date) {
+    public String asJson(final Object object) {
         try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(date);
-        } catch (ParseException e) {
-            return null;
+            return MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public ResultActions perform(final MockHttpServletRequestBuilder request) throws Exception {
-        return mockMvc.perform(request);
+    public <T> T fromJson(final String json, final TypeReference<T> to) {
+        try {
+            return MAPPER.readValue(json, to);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String asJson(final Object object) throws JsonProcessingException {
-        return mapper.writeValueAsString(object);
+    public String readFixtureJson(String fileName) {
+        try {
+            return Files.readString(Path.of(PATH_TO_FIXTURES + fileName).toAbsolutePath().normalize());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static <T> T fromJson(final String json, final TypeReference<T> to) throws JsonProcessingException {
-        return mapper.readValue(json, to);
+    public MockHttpServletRequestBuilder buildRequest(Transferable dto, String path) throws Exception {
+        return post(BASE_URL + path)
+                .content(asJson(dto))
+                .contentType(APPLICATION_JSON);
     }
 }

@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class SightDto {
+public class SightDto implements Transferable {
     private String name;
     private Date creationDate;
     private String description;

@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SightUpdateDto {
+public class SightUpdateDto implements Transferable {
     private String description;
 }

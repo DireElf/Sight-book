@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class CityDto {
+public class CityDto implements Transferable {
     private String name;
     private Integer population;
     private Boolean hasMetro;
