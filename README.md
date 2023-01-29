@@ -1,3 +1,5 @@
+[![Tests](https://github.com/DireElf/Sight-book/actions/workflows/Tests%20passed.yml/badge.svg)](https://github.com/DireElf/Sight-book/actions/workflows/Tests%20passed.yml)
+
 Для запуска потребуются: Java 8 (или выше), PostgreSQL и пользователь с соответствующими правами.   
 
 Сборка проекта: Gradle  
