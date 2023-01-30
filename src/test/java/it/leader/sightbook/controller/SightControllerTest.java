@@ -190,7 +190,9 @@ class SightControllerTest {
         mockMvc.perform(delete(BASE_URL + SIGHTS_CONTROLLER_PATH + ID, sightId))
                 .andExpect(status().isOk());
 
-
         assertEquals(0, sightRepository.count());
+        assertEquals(1, cityRepository.count());
+        Set<Sight> citySights = cityRepository.findAll().get(0).getSights();
+        assertEquals(0, citySights.size());
     }
 }
