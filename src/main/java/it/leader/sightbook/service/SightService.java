@@ -11,4 +11,5 @@ public interface SightService {
     Sight createSight(SightDto sightDto);
     Sight updateSight(Long id, SightUpdateDto sightDto);
     List<Sight> getSights(Map<String, String> params);
+    void deleteSight(Long id);
 }

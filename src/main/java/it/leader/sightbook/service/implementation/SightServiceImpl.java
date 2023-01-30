@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -55,7 +57,7 @@ public class SightServiceImpl implements SightService {
         boolean shouldFilter = params.containsKey("type");
         boolean shouldSort = params.containsKey("sorted") && params.get("sorted").equals("true");
         if (!shouldFilter && !shouldSort) {
-            return sightList;
+            return sightRepository.findAll();
         }
         List<Sight> filteredList = null;
         if (shouldFilter) {
@@ -68,12 +70,21 @@ public class SightServiceImpl implements SightService {
     private List<Sight> getSortedList(List<Sight> list) {
         return list.stream()
                 .sorted(Comparator.comparing(Sight::getName))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private List<Sight> getListFilteredByType(List<Sight> list, String criteria) {
         return list.stream()
                 .filter(sight -> sight.getType().name().equals(criteria))
-                .toList();
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteSight(Long id) {
+        Optional<Sight> optional = sightRepository.findById(id);
+        if (!optional.isPresent()) {
+            throw new RuntimeException("Sight with ID " + id + "not found");
+        }
+        sightRepository.deleteById(id);
     }
 }

@@ -52,6 +52,6 @@ public class SightController {
 
     @DeleteMapping(ID)
     public void deleteSight(@PathVariable Long id) {
-        sightRepository.deleteById(id);
+        sightService.deleteSight(id);
     }
 }
