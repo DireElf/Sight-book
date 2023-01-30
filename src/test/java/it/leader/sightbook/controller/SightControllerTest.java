@@ -94,7 +94,8 @@ class SightControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        Set<Sight> sights = testUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
+        Set<Sight> sights = testUtils
+                .fromJson(response.getContentAsString(), new TypeReference<Set<Sight>>() {
         });
 
         assertEquals(2, sights.size());
@@ -128,7 +129,8 @@ class SightControllerTest {
                 .andReturn()
                 .getResponse();
 
-        List<Sight> sortedSights = testUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
+        List<Sight> sortedSights = testUtils
+                .fromJson(response.getContentAsString(), new TypeReference<List<Sight>>() {
         });
 
         assertTrue(testUtils.isSorted(sortedSights));
@@ -165,7 +167,8 @@ class SightControllerTest {
                 .andReturn()
                 .getResponse();
 
-        List<Sight> filteredSights = testUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
+        List<Sight> filteredSights = testUtils
+                .fromJson(response.getContentAsString(), new TypeReference<List<Sight>>() {
         });
 
         assertNotEquals(totalSightsAmount, filteredSights.size());

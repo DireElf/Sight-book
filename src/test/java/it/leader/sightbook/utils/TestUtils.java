@@ -16,8 +16,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,28 +31,28 @@ public class TestUtils {
 
     public final CityDto SAMPLE_CITY_DTO_1 = fromJson(
             readFixtureJson("sample_city_dto1.json"),
-            new TypeReference<>() {
+            new TypeReference<CityDto>() {
     });
     public final CityDto SAMPLE_CITY_DTO_2 = fromJson(
             readFixtureJson("sample_city_dto2.json"),
-            new TypeReference<>() {
+            new TypeReference<CityDto>() {
     });
     public final CityDto SAMPLE_CITY_DTO_3 = fromJson(
             readFixtureJson("sample_city_dto3.json"),
-            new TypeReference<>() {
+            new TypeReference<CityDto>() {
     });
 
     public final SightDto SAMPLE_SIGHT_DTO_1 = fromJson(
             readFixtureJson("sample_sight_dto1.json"),
-            new TypeReference<>() {
+            new TypeReference<SightDto>() {
     });
     public final SightDto SAMPLE_SIGHT_DTO_2 = fromJson(
             readFixtureJson("sample_sight_dto2.json"),
-            new TypeReference<>() {
+            new TypeReference<SightDto>() {
     });
     public final SightDto SAMPLE_SIGHT_DTO_3 = fromJson(
             readFixtureJson("sample_sight_dto3.json"),
-            new TypeReference<>() {
+            new TypeReference<SightDto>() {
     });
 
     @Autowired
@@ -84,7 +86,9 @@ public class TestUtils {
 
     public String readFixtureJson(String fileName) {
         try {
-            return Files.readString(Path.of(PATH_TO_FIXTURES + fileName).toAbsolutePath().normalize());
+            Path path = Paths.get(PATH_TO_FIXTURES + fileName);
+            return Files.lines(path.toAbsolutePath().normalize())
+                    .collect(Collectors.joining());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

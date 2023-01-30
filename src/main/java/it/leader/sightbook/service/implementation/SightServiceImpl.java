@@ -7,17 +7,17 @@ import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import it.leader.sightbook.service.SightService;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -26,6 +26,8 @@ public class SightServiceImpl implements SightService {
 
     private final SightRepository sightRepository;
     private final CityRepository cityRepository;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
 
     @Override
@@ -53,30 +55,34 @@ public class SightServiceImpl implements SightService {
 
     @Override
     public List<Sight> getSights(Map<String, String> params) {
-        List<Sight> sightList = new ArrayList<>(sightRepository.findAll());
-        boolean shouldFilter = params.containsKey("type");
-        boolean shouldSort = params.containsKey("sorted") && params.get("sorted").equals("true");
-        if (!shouldFilter && !shouldSort) {
+        if (params.isEmpty()) {
             return sightRepository.findAll();
         }
-        List<Sight> filteredList = null;
-        if (shouldFilter) {
-            filteredList = getListFilteredByType(sightList, params.get("type"));
-            if (!shouldSort) return filteredList;
+        String requiredType = params.get("type");
+        boolean shouldSort = params.getOrDefault("sorted", "false").equals("true");
+
+        if (requiredType == null && shouldSort) {
+            return getSortedSights();
         }
-        return filteredList == null ? getSortedList(sightList) : getSortedList(filteredList);
+        if (requiredType != null && !shouldSort) {
+            return getSightsByType(requiredType);
+        }
+        return getFilteredSightsByTypeSortedByName(requiredType);
     }
 
-    private List<Sight> getSortedList(List<Sight> list) {
-        return list.stream()
-                .sorted(Comparator.comparing(Sight::getName))
-                .collect(Collectors.toList());
+    private List<Sight> getSortedSights() {
+        return sightRepository.findAll(Sort.by("name").ascending());
     }
 
-    private List<Sight> getListFilteredByType(List<Sight> list, String criteria) {
-        return list.stream()
-                .filter(sight -> sight.getType().name().equals(criteria))
-                .collect(Collectors.toList());
+    private List<Sight> getSightsByType(String requiredType) {
+        return entityManager.createQuery("SELECT s FROM Sight s WHERE "
+                + "type" + "="
+                + requiredType, Sight.class).getResultList();
+    }
+
+    private List<Sight> getFilteredSightsByTypeSortedByName(String requiredType) {
+        return entityManager.createQuery("SELECT s FROM Sight s WHERE type" + " = "
+                + requiredType + " ORDER BY name", Sight.class).getResultList();
     }
 
     @Override
