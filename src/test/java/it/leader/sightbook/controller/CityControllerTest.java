@@ -116,7 +116,8 @@ class CityControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        List<Sight> updatedCitySights = testUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
+        List<Sight> updatedCitySights = testUtils.fromJson(response.getContentAsString(),
+                new TypeReference<List<Sight>>() {
         });
 
         assertEquals(2, updatedCitySights.size());
