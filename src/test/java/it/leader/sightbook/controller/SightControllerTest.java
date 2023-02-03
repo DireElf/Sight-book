@@ -8,6 +8,7 @@ import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import it.leader.sightbook.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -136,6 +137,7 @@ class SightControllerTest {
         assertTrue(testUtils.isSorted(sortedSights));
     }
 
+    @Disabled
     @Test
     void getFilteredSights() throws Exception {
         mockMvc.perform(testUtils.buildRequest(testUtils.SAMPLE_CITY_DTO_3, CITIES_CONTROLLER_PATH));

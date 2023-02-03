@@ -7,11 +7,12 @@ import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import it.leader.sightbook.service.CityService;
-import jakarta.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public Set<Sight> getCitySights(Long id) {
-        final City city = cityRepository.findById(id).orElseThrow();
+        final City city = cityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         if (city.getSights() == null) {
             return new HashSet<>();
         }

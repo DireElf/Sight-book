@@ -7,8 +7,8 @@
 
 Сборка и запуск на Windows:  
 ```
-gradle clean build  
-gradle bootRun
+.\gradlew clean build  
+.\gradlew bootRun
 ```  
 
 Сборка и запуск на Linux: 

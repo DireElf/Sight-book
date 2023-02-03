@@ -7,14 +7,15 @@ import it.leader.sightbook.model.Sight;
 import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import it.leader.sightbook.service.SightService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -75,14 +76,13 @@ public class SightServiceImpl implements SightService {
     }
 
     private List<Sight> getSightsByType(String requiredType) {
-        return entityManager.createQuery("SELECT s FROM Sight s WHERE "
-                + "type" + "="
-                + requiredType, Sight.class).getResultList();
+        String statement = "SELECT * FROM sights WHERE type = " + requiredType;
+        return entityManager.createQuery(statement, Sight.class).getResultList();
     }
 
     private List<Sight> getFilteredSightsByTypeSortedByName(String requiredType) {
-        return entityManager.createQuery("SELECT s FROM Sight s WHERE type" + " = "
-                + requiredType + " ORDER BY name", Sight.class).getResultList();
+        String statement = "SELECT * FROM sights WHERE type = " + requiredType + "ORDER BY name";
+        return entityManager.createQuery(statement, Sight.class).getResultList();
     }
 
     @Override
