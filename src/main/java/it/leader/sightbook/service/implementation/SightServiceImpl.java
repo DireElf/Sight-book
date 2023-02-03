@@ -1,21 +1,24 @@
 package it.leader.sightbook.service.implementation;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import it.leader.sightbook.dto.SightDto;
 import it.leader.sightbook.dto.SightUpdateDto;
 import it.leader.sightbook.model.City;
+import it.leader.sightbook.model.QSight;
 import it.leader.sightbook.model.Sight;
+import it.leader.sightbook.model.SightType;
 import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import it.leader.sightbook.service.SightService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
-import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,30 +62,30 @@ public class SightServiceImpl implements SightService {
         if (params.isEmpty()) {
             return sightRepository.findAll();
         }
-        String requiredType = params.get("type");
-        boolean shouldSort = params.getOrDefault("sorted", "false").equals("true");
 
-        if (requiredType == null && shouldSort) {
-            return getSortedSights();
+        final String filterName = "type";
+
+        final String filterValue = params.get(filterName);
+        boolean shouldSort = Boolean.parseBoolean(params.getOrDefault("sort", "false"));
+
+        QSight qSight = QSight.sight;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager);
+
+        JPAQuery<Sight> query = jpaQueryFactory.selectFrom(qSight);
+
+        if (filterValue != null) {
+            booleanBuilder.and(qSight.type.eq(SightType.valueOf(filterValue)));
         }
-        if (requiredType != null && !shouldSort) {
-            return getSightsByType(requiredType);
+
+        if (shouldSort) {
+            return query
+                    .where(booleanBuilder)
+                    .orderBy(qSight.name.asc())
+                    .fetch();
         }
-        return getFilteredSightsByTypeSortedByName(requiredType);
-    }
 
-    private List<Sight> getSortedSights() {
-        return sightRepository.findAll(Sort.by("name").ascending());
-    }
-
-    private List<Sight> getSightsByType(String requiredType) {
-        String statement = "SELECT * FROM sights WHERE type = " + requiredType;
-        return entityManager.createQuery(statement, Sight.class).getResultList();
-    }
-
-    private List<Sight> getFilteredSightsByTypeSortedByName(String requiredType) {
-        String statement = "SELECT * FROM sights WHERE type = " + requiredType + "ORDER BY name";
-        return entityManager.createQuery(statement, Sight.class).getResultList();
+        return query.where(booleanBuilder).fetch();
     }
 
     @Override

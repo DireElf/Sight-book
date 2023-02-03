@@ -8,7 +8,6 @@ import it.leader.sightbook.repository.CityRepository;
 import it.leader.sightbook.repository.SightRepository;
 import it.leader.sightbook.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +22,9 @@ import java.util.Set;
 import static it.leader.sightbook.controller.CityController.CITIES_CONTROLLER_PATH;
 import static it.leader.sightbook.controller.CityController.ID;
 import static it.leader.sightbook.controller.SightController.SIGHTS_CONTROLLER_PATH;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -97,7 +98,7 @@ class SightControllerTest {
 
         Set<Sight> sights = testUtils
                 .fromJson(response.getContentAsString(), new TypeReference<Set<Sight>>() {
-        });
+                });
 
         assertEquals(2, sights.size());
     }
@@ -125,19 +126,18 @@ class SightControllerTest {
                 .andExpect(status().isCreated());
 
         MockHttpServletResponse response = mockMvc.perform(
-                get(BASE_URL + SIGHTS_CONTROLLER_PATH).param("sorted", "true"))
+                        get(BASE_URL + SIGHTS_CONTROLLER_PATH).param("sorted", "true"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 
         List<Sight> sortedSights = testUtils
                 .fromJson(response.getContentAsString(), new TypeReference<List<Sight>>() {
-        });
+                });
 
         assertTrue(testUtils.isSorted(sortedSights));
     }
 
-    @Disabled
     @Test
     void getFilteredSights() throws Exception {
         mockMvc.perform(testUtils.buildRequest(testUtils.SAMPLE_CITY_DTO_3, CITIES_CONTROLLER_PATH));
@@ -171,7 +171,7 @@ class SightControllerTest {
 
         List<Sight> filteredSights = testUtils
                 .fromJson(response.getContentAsString(), new TypeReference<List<Sight>>() {
-        });
+                });
 
         assertNotEquals(totalSightsAmount, filteredSights.size());
     }
