@@ -1,4 +1,4 @@
-[![Tests](https://github.com/DireElf/Sight-book/actions/workflows/Tests.yml/badge.svg)](https://github.com/DireElf/Sight-book/actions/workflows/Tests.yml)
+[![Build status](https://github.com/DireElf/Sight-book/actions/workflows/Tests.yml/badge.svg)](https://github.com/DireElf/Sight-book/actions/workflows/Tests.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/dcfd062924c7d771d847/maintainability)](https://codeclimate.com/github/DireElf/Sight-book/maintainability)
 
 Для запуска потребуются: Java 8 (или выше), PostgreSQL и пользователь с соответствующими правами.     
